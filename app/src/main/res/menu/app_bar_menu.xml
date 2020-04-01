@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title="Tasks"
+        android:id="@+id/tasks"
+        android:icon="@drawable/ic_check_circle"
+        />
+
+    <item
+        android:title="Attendance"
+        android:id="@+id/attendance"
+        android:icon="@drawable/ic_assignment_turned_in_black_24dp"
+        />
+
+    <item
+        android:title="Profile"
+        android:id="@+id/profile"
+        android:icon="@drawable/ic_account_circle_black_24dp"
+        />
+
+
+</menu>

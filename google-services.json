@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "508170444098",
+    "firebase_url": "https://kuchthokaro.firebaseio.com",
+    "project_id": "kuchthokaro",
+    "storage_bucket": "kuchthokaro.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:508170444098:android:e3791449a3e1a6458cfcdb",
+        "android_client_info": {
+          "package_name": "com.simpad.kuchthokaro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "508170444098-84jbfglioujvu31n5mmvssnt8btboal3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.simpad.kuchthokaro",
+            "certificate_hash": "a14ce10c87c5120a656ac0296cc79f61c9e0ce1b"
+          }
+        },
+        {
+          "client_id": "508170444098-jqs4470q9gpqub8rhcn8su2n6ddci6gj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfAMnrKgrb-GOZz6__n346a4bzKWZ9F2E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "508170444098-jqs4470q9gpqub8rhcn8su2n6ddci6gj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

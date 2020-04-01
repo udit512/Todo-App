@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:id="@+id/rel1"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/indie_flower"
+            android:text="ADD NEW LIST"
+            android:textSize="25sp" />
+
+    </RelativeLayout>
+
+
+
+        <LinearLayout
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="100"
+            android:layout_below="@id/rel1"
+            >
+            <ImageView
+                android:id="@+id/add"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:layout_weight="0.3"
+                android:src="@drawable/ic_add_black_24dp"
+
+                />
+
+            <EditText
+                android:id="@+id/newListName"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:fontFamily="@font/indie_flower"
+                android:layout_weight="0.7"
+                android:hint="LIST NAME" />
+
+
+
+
+        </LinearLayout>
+
+
+
+
+
+
+</RelativeLayout>
