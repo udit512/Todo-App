@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.solver.widgets.Snapshot;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +31,7 @@ import com.simpad.kuchthokaro.R;
 import com.simpad.kuchthokaro.Utils.TaskRecyclerViewAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MyTask extends Fragment {
 
@@ -44,7 +47,8 @@ public class MyTask extends Fragment {
     private Calendar calendar;
     private SimpleDateFormat dateFormat;
     private String date;
-
+    private CheckBox checkBox;
+    private final ArrayList<String> task = new ArrayList<>();;
 
 
     @Override
@@ -66,7 +70,7 @@ public class MyTask extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mDatabase= FirebaseDatabase.getInstance().getReference().child("category");
-        final ArrayList<String> task = new ArrayList<>();
+        checkBox = view.findViewById(R.id.checkBox);
         add = view.findViewById(R.id.add);
         newTask = view.findViewById(R.id.newListName);
 
@@ -110,6 +114,8 @@ public class MyTask extends Fragment {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(taskRecyclerViewAdapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,6 +124,7 @@ public class MyTask extends Fragment {
                 dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");//yyyy-MM-dd HH:mm:ss
                 date = dateFormat.format(calendar.getTime());
                 mDatabase.child(categoryName).child(newTask.getText().toString()).child("Created on").setValue(date);
+                mDatabase.child(categoryName).child(newTask.getText().toString()).child("Done").setValue(0);
                 Toast.makeText(mcontext, date, Toast.LENGTH_SHORT).show();
                 newTask.setText("");
                 taskRecyclerViewAdapter.notifyDataSetChanged();
@@ -125,12 +132,18 @@ public class MyTask extends Fragment {
         });
 
 
+
+
+
+
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 task.clear();
                 for (DataSnapshot snap : dataSnapshot.child(categoryName).getChildren()){
-                    if(!snap.getKey().equals("Date")){
+                    String taskn=snap.getKey();
+                   // Integer done = (int)snap.child(taskn).child("Done").getValue();
+                    if(!taskn.equals("Date") ){
                         task.add(snap.getKey());
                     }
 
@@ -148,6 +161,25 @@ public class MyTask extends Fragment {
 
 
     }
+
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP|ItemTouchHelper.DOWN|ItemTouchHelper.START|ItemTouchHelper.END,0) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+
+            Integer fromPosition = viewHolder.getAdapterPosition();
+            Integer toPosition = target.getAdapterPosition();
+
+            Collections.swap(task,fromPosition,toPosition);
+            recyclerView.getAdapter().notifyItemMoved(fromPosition,toPosition);
+
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+        }
+    };
 
 
 
