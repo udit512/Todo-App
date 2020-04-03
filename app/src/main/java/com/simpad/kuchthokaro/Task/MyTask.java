@@ -4,7 +4,10 @@ import android.content.Context;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -22,16 +25,22 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.simpad.kuchthokaro.Model.TaskInfo;
 import com.simpad.kuchthokaro.R;
 import com.simpad.kuchthokaro.Utils.TaskRecyclerViewAdapter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 public class MyTask extends Fragment {
 
@@ -70,7 +79,6 @@ public class MyTask extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mDatabase= FirebaseDatabase.getInstance().getReference().child("category");
-        checkBox = view.findViewById(R.id.checkBox);
         add = view.findViewById(R.id.add);
         newTask = view.findViewById(R.id.newListName);
 
@@ -108,7 +116,7 @@ public class MyTask extends Fragment {
             }
         });
 
-        final TaskRecyclerViewAdapter taskRecyclerViewAdapter = new TaskRecyclerViewAdapter(mcontext,task);
+        final TaskRecyclerViewAdapter taskRecyclerViewAdapter = new TaskRecyclerViewAdapter(mcontext,task,categoryName);
         recyclerView = view.findViewById(R.id.taskRecyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mcontext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -117,14 +125,18 @@ public class MyTask extends Fragment {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
+
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 calendar = Calendar.getInstance();
                 dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");//yyyy-MM-dd HH:mm:ss
                 date = dateFormat.format(calendar.getTime());
-                mDatabase.child(categoryName).child(newTask.getText().toString()).child("Created on").setValue(date);
-                mDatabase.child(categoryName).child(newTask.getText().toString()).child("Done").setValue(0);
+                TaskInfo taskInfo = new TaskInfo();
+                taskInfo.setCreatedon(date);
+                taskInfo.setDone(0);
+                mDatabase.child(categoryName).child(newTask.getText().toString()).setValue(taskInfo);
+               // mDatabase.child(categoryName).child(newTask.getText().toString()).child("Done").setValue(taskInfo.getDone());
                 Toast.makeText(mcontext, date, Toast.LENGTH_SHORT).show();
                 newTask.setText("");
                 taskRecyclerViewAdapter.notifyDataSetChanged();
@@ -141,12 +153,12 @@ public class MyTask extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 task.clear();
                 for (DataSnapshot snap : dataSnapshot.child(categoryName).getChildren()){
-                    String taskn=snap.getKey();
-                   // Integer done = (int)snap.child(taskn).child("Done").getValue();
-                    if(!taskn.equals("Date") ){
-                        task.add(snap.getKey());
-                    }
+                    final String taskn = snap.getKey();
+                    assert taskn != null;
 
+                    if(!taskn.equals("Date") && (long)snap.child("done").getValue()!=1  ){
+                        task.add(taskn);
+                    }
                 }
                 taskRecyclerViewAdapter.notifyDataSetChanged();
 
